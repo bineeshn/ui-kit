@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@your-org'
+          scope: '@bineeshn'
 
       - name: Install dependencies
         run: npm install
@@ -47,4 +47,4 @@ jobs:
       - name: Publish package
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.Package }}

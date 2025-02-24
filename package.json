@@ -11,6 +11,9 @@
   "scripts": {
     "rollup": "rollup -c"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/bineeshn/ui-kit"
+  },
   "author": "Bineedh N",
   "license": "ISC",
   "dependencies": {
