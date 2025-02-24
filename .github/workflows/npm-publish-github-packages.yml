@@ -26,20 +26,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Determine version bump
-      #   id: version
-      #   run: |
-      #     PR_TITLE="${{ github.event.pull_request.title }}"
-      #     if [[ $PR_TITLE == *"major"* ]]; then
-      #       echo "::set-output name=BUMP::major"
-      #     elif [[ $PR_TITLE == *"minor"* ]]; then
-      #       echo "::set-output name=BUMP::minor"
-      #     else
-      #       echo "::set-output name=BUMP::patch"
-      #     fi
+      - name: Determine version bump
+        id: version
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ $PR_TITLE == *"major"* ]]; then
+            echo "::set-output name=BUMP::major"
+          elif [[ $PR_TITLE == *"minor"* ]]; then
+            echo "::set-output name=BUMP::minor"
+          else
+            echo "::set-output name=BUMP::patch"
+          fi
 
-      # - name: Bump version
-      #   run: npm version ${{ steps.version.outputs.BUMP }}
+      - name: Bump version
+        run: npm version ${{ steps.version.outputs.BUMP }}
 
       - name: Build package
         run: npm run rollup
