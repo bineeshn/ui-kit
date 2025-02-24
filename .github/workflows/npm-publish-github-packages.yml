@@ -16,7 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # Persist Git credentials for later steps
+          token: ${{ secrets.GIT_PACKAGE }} 
+          persist-credentials: true  # Persist credentials for later steps
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
