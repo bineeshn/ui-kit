@@ -1,0 +1,50 @@
+name: Publish npm package
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  publish:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@your-org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Determine version bump
+        id: version
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ $PR_TITLE == *"major"* ]]; then
+            echo "::set-output name=BUMP::major"
+          elif [[ $PR_TITLE == *"minor"* ]]; then
+            echo "::set-output name=BUMP::minor"
+          else
+            echo "::set-output name=BUMP::patch"
+          fi
+
+      - name: Bump version
+        run: npm version ${{ steps.version.outputs.BUMP }}
+
+      - name: Build package
+        run: npm run rollup
+
+      - name: Publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
