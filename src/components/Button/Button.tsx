@@ -1,110 +1,123 @@
 import React from "react";
-import { Button, ButtonProps } from "@mui/material";
+import { Button as MUIButton, ButtonProps, ThemeProvider } from "@mui/material";
 import styled, { css } from "styled-components";
-import theme from "../../theme";
+import theme from "../../theme/theme";
 
-interface Props extends Omit<ButtonProps, "color" | "size"> {
-    color?: "primary" | "secondary" | "tertiary"| "destructive";
-    size?: "small" | "default" | "large";
+export interface Props extends Omit<ButtonProps, "color" | "size"> {
+	color?: "primary" | "secondary" | "tertiary" | "destructive";
+	size?: "small" | "default" | "large";
 }
 
-// Styled-component using custom props
-const StyledButton = styled(Button) <Props>`
-    &.MuiButton-root {
-        font-family: inherit;
-        text-transform: inherit;
-        ${(p) =>
-            p.color === "secondary"
-                ? css`
-                    background-color: #192a30;
-                    color: #fff;
-                    border: 1px solid #7d7f80;
-                    &:hover {
-                        background-color: #333b3e;
-                        border-color: #c9caca;
-                    }
-                    &:disabled {
-                        background-color: #192a30;
-                        border-color: #545859;
-                        color: #7d7f80;
-                    }
-                `
-            : p.color === "tertiary"
-                ? css`
-                    background-color: transparent;
-                    color: #fff;
-                    &:hover {
-                        background-color: #333b3e;
-                    }
-                    &:disabled {
-                        color: #7d7f80;
-                    }
-                `
-            : p.color === "destructive"
-                ? css`
-                    background-color: #890606;
-                    color: #fff;
-                    border: 1px solid #aa0b0b;
-                    &:hover {
-                        background-color: #aa0b0b;
-                        border: 1px solid #c9caca;
-                    }
-                    &:disabled {
-                        background-color: #361419;
-                        border-color: #545859;
-                        color: #7d7f80;
-                    }
-                `
-            : (p.color === "primary" || !p.color) &&
-                css`
-                    background-color: #125b56;
-                    color: #fff;
-                    border: 1px solid #02897f;
-                    &:hover {
-                        background-color: #02897f;
-                        border-color: #c9caca;
-                    }
-                    &:disabled {
-                        background-color: #192a30;
-                        border-color: #545859;
-                        color: #7d7f80;
-                    }
-                `
-        }
-        ${(p) =>
-            p.size === "small"
-                ? css`
-                    border-radius: 0.25rem;
-                    font-size: 0.875rem;
-                    gap: 0.25rem;
-                    height: 24px;
-                    line-height: 1rem;
-                    padding: 6px 0.5rem;
-                `
-            : p.size === "large"
-                ? css`
-                    border-radius: 0.25rem;
-                    font-size: 1rem;
-                    gap: 0.5rem;
-                    height: 2.5rem;
-                    line-height: 1.25rem;
-                    padding: 12px 1rem;
-                `
-            : (p.size === "default" || !p.size) &&
-                css`
-                    border-radius: 0.5rem;
-                    font-size: 0.875rem;
-                    gap: 0.5rem;
-                    height: 2rem;
-                    line-height: 1rem;
-                    padding: 0.5rem;
-                `
-        }
-    }
-`;
-
-const MUIButton: React.FC<Props> = ({ children, ...props }) => {
-    return <StyledButton {...props}>{children}</StyledButton>;
+const colorStyles = (color: Props["color"], theme: any) => {
+	switch (color) {
+		case "secondary":
+			return css`
+				background-color: ${theme.colors.defaults.surfaces.fore};
+				color: ${theme.colors.defaults.font.primary};
+				border: 1px solid ${theme.colors.defaults.border.default};
+				&:hover {
+					background-color: ${theme.colors.defaults.surfaces.hover};
+					border-color: ${theme.colors.defaults.border.hover};
+				}
+				&:disabled {
+					background-color: transparent;
+					border-color: ${theme.colors.defaults.border.disabled};
+					color: ${theme.colors.defaults.font.disabled};
+				}
+			`;
+		case "tertiary":
+			return css`
+				background-color: transparent;
+				color: ${theme.colors.defaults.font.primary};
+				&:hover {
+					background-color: ${theme.colors.defaults.surfaces.hover};
+				}
+				&:disabled {
+					color: ${theme.colors.defaults.font.disabled};
+				}
+			`;
+		case "destructive":
+			return css`
+				background-color: ${theme.colors.primary.red[700]};
+				color: ${theme.colors.defaults.font.primary};
+				border: 1px solid ${theme.colors.primary.red[600]};
+				&:hover {
+					background-color: ${theme.colors.primary.red[600]};
+					border-color: ${theme.colors.defaults.border.hover};
+				}
+				&:disabled {
+					background-color: ${theme.colors.primary.red[900]};
+					border-color: ${theme.colors.defaults.border.disabled};
+					color: ${theme.colors.defaults.font.disabled};
+				}
+			`;
+		case "primary":
+		default:
+			return css`
+				background-color: ${theme.colors.brand.dark};
+				color: ${theme.colors.defaults.font.primary};
+				border: 1px solid ${theme.colors.defaults.border.focus};
+				&:hover {
+					background-color: ${theme.colors.brand.main};
+					border-color: ${theme.colors.defaults.border.hover};
+				}
+				&:disabled {
+					background-color: ${theme.colors.defaults.surfaces.fore};
+					border-color: ${theme.colors.defaults.border.disabled};
+					color: ${theme.colors.defaults.font.disabled};
+				}
+			`;
+	}
 };
 
-export default MUIButton;
+const sizeStyles = (size: Props["size"]) => {
+	switch (size) {
+		case "small":
+			return css`
+				border-radius: 0.25rem;
+				font-size: 0.875rem;
+				gap: 0.25rem;
+				height: 1.5rem;
+				line-height: 1rem;
+				padding: 0.375rem 0.5rem;
+			`;
+		case "large":
+			return css`
+				border-radius: 0.25rem;
+				font-size: 1rem;
+				gap: 0.5rem;
+				height: 2.5rem;
+				line-height: 1.25rem;
+				padding: 0.75rem 1rem;
+			`;
+		case "default":
+		default:
+			return css`
+				border-radius: 0.5rem;
+				font-size: 0.875rem;
+				gap: 0.5rem;
+				height: 2rem;
+				line-height: 1rem;
+				padding: 0.5rem;
+			`;
+	}
+};
+
+const StyledButton = styled(MUIButton) <Props>`
+	&.MuiButton-root {
+		font-family: inherit;
+		text-transform: inherit;
+		${({ color }) => colorStyles(color, theme)}
+		${({ size }) => sizeStyles(size)}
+	}
+`;
+
+const Button: React.FC<Props> = ({ children, ...props }) => {
+	return (
+		<ThemeProvider theme={theme}>
+			<StyledButton {...props}>{children}</StyledButton>	
+		</ThemeProvider>
+	);
+};
+
+export default Button;
