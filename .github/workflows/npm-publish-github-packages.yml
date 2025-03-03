@@ -10,6 +10,11 @@ on:
       - synchronize  # Triggered when new commits are pushed to the PR
     branches:
       - main
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
 
 jobs:
   test:
