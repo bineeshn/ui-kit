@@ -45,7 +45,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.FINE_GIT }}
+          token: ${{ secrets.GIT_PACKAGE }}
           persist-credentials: true  # Persist credentials for later steps
 
       - name: Set up Node.js
@@ -87,4 +87,4 @@ jobs:
       - name: Publish package
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.FINE_GIT }}
+          NODE_AUTH_TOKEN: ${{ secrets.GIT_PACKAGE }}
