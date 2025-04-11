@@ -6,10 +6,12 @@ name: Publish npm package
 on:
   pull_request:
     types:
-      - opened
+      - opened  # Triggered when new PR is opened
       - synchronize  # Triggered when new commits are pushed to the PR
     branches:
       - main
+      
+  # Trigger publish when a PR is merged
   pull_request_target:
     types:
       - closed
@@ -23,15 +25,23 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests
         run: npm test
@@ -43,28 +53,38 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GIT_PACKAGE }}
+          token: ${{ secrets.GIT_PACKAGE }} 
           persist-credentials: true  # Persist credentials for later steps
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@bineeshn'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Determine version bump
         id: version
         run: |
           PR_TITLE="${{ github.event.pull_request.title }}"
-          if [[ $PR_TITLE == *"major"* ]]; then
+          PR_TITLE_LOWER=$(echo "$PR_TITLE" | tr '[:upper:]' '[:lower:]')
+
+          if [[ $PR_TITLE_LOWER == *"major"* ]]; then
             echo "BUMP=major" >> $GITHUB_OUTPUT
-          elif [[ $PR_TITLE == *"minor"* ]]; then
+          elif [[ $PR_TITLE_LOWER == *"minor"* ]]; then
             echo "BUMP=minor" >> $GITHUB_OUTPUT
           else
             echo "BUMP=patch" >> $GITHUB_OUTPUT
@@ -82,7 +102,7 @@ jobs:
           git push --tags
 
       - name: Build package
-        run: npm run rollup
+        run: npm run build
 
       - name: Publish package
         run: npm publish

@@ -1,76 +1,35 @@
 import React from "react";
-import { Button as MUIButton, ButtonProps, ThemeProvider } from "@mui/material";
+import { Button as MUIButton, ButtonProps as MUIButtonProps, ThemeProvider } from "@mui/material";
 import styled, { css } from "styled-components";
 import theme from "../../theme/theme";
+import { ColorTheme } from "../../theme/themeTypes";
 
-export interface Props extends Omit<ButtonProps, "color" | "size"> {
+export interface ButtonProps extends Omit<MUIButtonProps, "color" | "size"> {
 	color?: "primary" | "secondary" | "tertiary" | "destructive";
 	size?: "small" | "default" | "large";
 }
 
-const colorStyles = (color: Props["color"], theme: any) => {
-	switch (color) {
-		case "secondary":
-			return css`
-				background-color: ${theme.colors.defaults.surfaces.fore};
-				color: ${theme.colors.defaults.font.primary};
-				border: 1px solid ${theme.colors.defaults.border.default};
-				&:hover {
-					background-color: ${theme.colors.defaults.surfaces.hover};
-					border-color: ${theme.colors.defaults.border.hover};
-				}
-				&:disabled {
-					background-color: transparent;
-					border-color: ${theme.colors.defaults.border.disabled};
-					color: ${theme.colors.defaults.font.disabled};
-				}
-			`;
-		case "tertiary":
-			return css`
-				background-color: transparent;
-				color: ${theme.colors.defaults.font.primary};
-				&:hover {
-					background-color: ${theme.colors.defaults.surfaces.hover};
-				}
-				&:disabled {
-					color: ${theme.colors.defaults.font.disabled};
-				}
-			`;
-		case "destructive":
-			return css`
-				background-color: ${theme.colors.primary.red[700]};
-				color: ${theme.colors.defaults.font.primary};
-				border: 1px solid ${theme.colors.primary.red[600]};
-				&:hover {
-					background-color: ${theme.colors.primary.red[600]};
-					border-color: ${theme.colors.defaults.border.hover};
-				}
-				&:disabled {
-					background-color: ${theme.colors.primary.red[900]};
-					border-color: ${theme.colors.defaults.border.disabled};
-					color: ${theme.colors.defaults.font.disabled};
-				}
-			`;
-		case "primary":
-		default:
-			return css`
-				background-color: ${theme.colors.brand.dark};
-				color: ${theme.colors.defaults.font.primary};
-				border: 1px solid ${theme.colors.defaults.border.focus};
-				&:hover {
-					background-color: ${theme.colors.brand.main};
-					border-color: ${theme.colors.defaults.border.hover};
-				}
-				&:disabled {
-					background-color: ${theme.colors.defaults.surfaces.fore};
-					border-color: ${theme.colors.defaults.border.disabled};
-					color: ${theme.colors.defaults.font.disabled};
-				}
-			`;
-	}
-};
+const colorStyles = (color: ButtonProps["color"] = 'primary', colors: ColorTheme) =>{
 
-const sizeStyles = (size: Props["size"]) => {
+	const isTertiary = color === "tertiary";
+
+	return css`
+		background-color: ${colors.background[color].default};
+		color: ${colors.text[color].default};
+		${!isTertiary ? `border: 1px solid ${colors.border[color].default};` : ""}
+		&:hover {
+			background-color: ${colors.background[color].hover};
+			${!isTertiary ? `border-color: ${colors.border[color].hover};` : ""}
+		}
+		&:disabled {
+			background-color: ${colors.background[color].disabled};
+			${!isTertiary ? `border-color: ${colors.border[color].disabled};` : ""}
+			color: ${colors.text[color].disabled};
+		}
+	`;
+}
+
+const sizeStyles = (size: ButtonProps["size"]) => {
 	switch (size) {
 		case "small":
 			return css`
@@ -83,7 +42,7 @@ const sizeStyles = (size: Props["size"]) => {
 			`;
 		case "large":
 			return css`
-				border-radius: 0.25rem;
+				border-radius: 0.5rem;
 				font-size: 1rem;
 				gap: 0.5rem;
 				height: 2.5rem;
@@ -103,16 +62,22 @@ const sizeStyles = (size: Props["size"]) => {
 	}
 };
 
-const StyledButton = styled(MUIButton) <Props>`
+const StyledButton = styled(MUIButton) <ButtonProps>`
 	&.MuiButton-root {
 		font-family: inherit;
 		text-transform: inherit;
-		${({ color }) => colorStyles(color, theme)}
+		${({ color }) => colorStyles(color, theme.colors)}
 		${({ size }) => sizeStyles(size)}
+
+		svg,
+		img{
+			height: 1em;
+			width: 1em;
+		}
 	}
 `;
 
-const Button: React.FC<Props> = ({ children, ...props }) => {
+const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
 	return (
 		<ThemeProvider theme={theme}>
 			<StyledButton {...props}>{children}</StyledButton>	
