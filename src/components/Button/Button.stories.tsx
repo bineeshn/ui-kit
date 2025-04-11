@@ -1,9 +1,10 @@
 import React from "react";
 import { StoryFn, Meta } from "@storybook/react";
-import Button, { Props } from "./Button"; 
+import Button, { ButtonProps } from "./Button"; 
+import { EditIcon, SearchIcon } from "@storybook/icons";
 
 // Component metadata
-const meta: Meta<Props> = {
+const meta: Meta<ButtonProps> = {
     title: "Components/Button", 
     component: Button,
     tags: ["autodocs"],
@@ -30,7 +31,7 @@ const meta: Meta<Props> = {
 }
 
 // Template for creating stories
-const Template: StoryFn<Props> = (args) => <Button {...args}>{args.children}</Button>;
+const Template: StoryFn<ButtonProps> = (args) => <Button {...args}>{args.children}</Button>;
 
 // Default button
 export const Default = Template.bind({});
@@ -70,4 +71,26 @@ Destructive.args = {
 };
 
 export default meta;
+
+// WithLeftIcon button
+export const WithLeftIcon = Template.bind({});
+WithLeftIcon.args = {
+    color: "primary",
+    children: (
+        <>
+            <EditIcon /> Edit
+        </>
+    ),
+};
+
+// WithRightIcon button
+export const WithRightIcon = Template.bind({});
+WithRightIcon.args = {
+    color: "primary",
+    children: (
+        <>
+            Search <SearchIcon/>
+        </>
+    ),
+};
 

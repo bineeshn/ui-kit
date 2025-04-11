@@ -3,12 +3,13 @@ import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import dts from 'rollup-plugin-dts'
 import terser from '@rollup/plugin-terser'
+import postcss from 'rollup-plugin-postcss'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
+import babel from '@rollup/plugin-babel';
 import packageJson from "./package.json" assert { type: "json" };
 
 export default [
     {
-        // preserveModules: true,
         input: "src/index.ts",
         output: [
             {
@@ -26,14 +27,37 @@ export default [
             peerDepsExternal(),
             resolve(),
             commonjs(),
-            terser(),
             typescript({ tsconfig: './tsconfig.json'}),
-        ]
+            postcss({
+                config: {
+                    path: './postcss.config.js',
+                },
+                extensions: ['.css'],
+                minimize: true,
+                inject: {
+                    insertAt: 'top',
+                },
+            }),
+            babel({
+                babelHelpers: "bundled",
+                extensions: [".js", ".jsx", ".ts", ".tsx"],
+                plugins: ["babel-plugin-macros"],
+            }),
+            terser(),
+        ],
+        watch: {
+            include: 'src/**',
+            exclude: 'node_modules/**',
+        }
     },
     {
         input: "dist/esm/types/index.d.ts",
         output: [{ file: "dist/index.d.ts", format: "esm" }],
         plugins: [dts.default()],
-        external: [ /\.css$/ ],
+        external: [/\.css$/],
+        watch: {
+            include: 'dist/esm/types/**',
+            exclude: 'node_modules/**',
+        }
     },
 ];
