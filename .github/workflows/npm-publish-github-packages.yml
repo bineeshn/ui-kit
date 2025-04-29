@@ -104,6 +104,10 @@ jobs:
       - name: Build package
         run: yarn build
 
+      - name: Set up .npmrc for GitHub Packages
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_PACKAGE }}" > ~/.npmrc
+
       - name: Publish package
         run: yarn publish --non-interactive
         env:
