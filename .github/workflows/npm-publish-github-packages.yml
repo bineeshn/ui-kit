@@ -18,14 +18,14 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-  packages: write 
-
 jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest 
+    
+    permissions:
+      contents: write
+      packages: write 
 
     steps:
       - name: Checkout code
