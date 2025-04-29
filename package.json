@@ -17,7 +17,7 @@
     "build-storybook": "storybook build"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/bineeshn/ui-kit"
+    "registry": "https://npm.pkg.github.com/"
   },
   "author": "Bineedh N",
   "license": "ISC",
