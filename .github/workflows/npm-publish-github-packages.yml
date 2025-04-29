@@ -106,7 +106,8 @@ jobs:
 
       - name: Set up .npmrc for GitHub Packages
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_PACKAGE }}" > ~/.npmrc
+          echo "@armadasystems:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_PACKAGE }}" >> ~/.npmrc
 
       - name: Publish package
         run: yarn publish --non-interactive
