@@ -17,15 +17,15 @@ on:
       - closed
     branches:
       - main
-
+    
+permissions:
+  contents: write
+  packages: write 
+  
 jobs:
   test:
     name: Run Tests
-    runs-on: ubuntu-latest 
-    
-    permissions:
-      contents: write
-      packages: write 
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
