@@ -55,7 +55,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GIT_PACKAGE }} 
+          token: ${{ secrets.GITHUB_TOKEN }} 
           persist-credentials: true  # Persist credentials for later steps
 
       - name: Set up Node.js
@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: '20.18.0'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@nineeshn'
+          scope: '@bineeshn'
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -104,12 +104,12 @@ jobs:
       - name: Build package
         run: yarn build
 
-      - name: Set up .npmrc for GitHub Packages
-        run: |
-          echo "@armadasystems:registry=https://npm.pkg.github.com/" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_PACKAGE }}" >> ~/.npmrc
+      # - name: Set up .npmrc for GitHub Packages
+      #   run: |
+      #     echo "@bineeshn:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+      #     echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
       - name: Publish package
         run: yarn publish --non-interactive
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GIT_PACKAGE }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
