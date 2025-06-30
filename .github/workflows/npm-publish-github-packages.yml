@@ -104,10 +104,10 @@ jobs:
       - name: Build package
         run: yarn build
 
-      # - name: Set up .npmrc for GitHub Packages
-      #   run: |
-      #     echo "@bineeshn:registry=https://npm.pkg.github.com/" >> ~/.npmrc
-      #     echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+      - name: Set up .npmrc for GitHub Packages
+        run: |
+          echo "@bineeshn:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
       - name: Publish package
         run: yarn publish --non-interactive
